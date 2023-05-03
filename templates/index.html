@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painting of the Day</title>
+    <title>Art Interpreter</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Painting of the Day</h1>
+        <h1>Art Interpreter</h1>
         <img src="{{ painting.image_url }}" alt="{{ painting.title }}" class="painting">
         <h2>{{ painting.title }}</h2>
         <p>By {{ painting.artist }} ({{ painting.date }})</p>
         <p>{{ painting.info }}</p>
+    </div>
+    <div class="footer">
+        <p>Flask-based Web App with OpenAI Integration, Developed Using ChatGPT-3.5 and Harvard's API. Developed with <3 by Dylan.</p>
     </div>
 </body>
 </html>
