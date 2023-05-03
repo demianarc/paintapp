@@ -8,14 +8,16 @@
 </head>
 <body>
     <div class="container">
-        <h1>Art Interpreter</h1>
-        <img src="{{ painting.image_url }}" alt="{{ painting.title }}" class="painting">
-        <h2>{{ painting.title }}</h2>
-        <p>By {{ painting.artist }} ({{ painting.date }})</p>
-        <p>{{ painting.info }}</p>
-    </div>
-    <div class="footer">
-        <p>Flask-based Web App with OpenAI Integration, Developed Using ChatGPT-3.5 and Harvard's API. Developed with <3 by Dylan.</p>
+        <div class="content">
+            <h1>Art Interpreter</h1>
+            <img src="{{ painting.image_url }}" alt="{{ painting.title }}" class="painting">
+            <h2>{{ painting.title }}</h2>
+            <p>By {{ painting.artist }} ({{ painting.date }})</p>
+            <p>{{ painting.info }}</p>
+        </div>
+        <footer>
+            Flask-based Web App with OpenAI Integration, Developed Using ChatGPT-3.5 and Harvard's API. Developed with <3 by Dylan.
+        </footer>
     </div>
 </body>
 </html>

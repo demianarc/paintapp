@@ -6,12 +6,20 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #F7F5EB;
+    background-color: #f0f0f0;
 }
 
 .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     max-width: 800px;
+}
+
+.content {
+    flex-grow: 1;
 }
 
 .painting {
@@ -30,9 +38,8 @@ h2 {
     margin-bottom: 0.5rem;
 }
 
-.footer {
-    text-align: center;
+footer {
+    margin-top: 1rem;
     font-size: 0.8rem;
-    margin-top: 20px;
-    padding: 10px;
+    color: #666;
 }
