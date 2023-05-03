@@ -43,7 +43,14 @@ def scrape_painting():
     }
 
 def generate_artwork_info(artist, title):
-    prompt = f"You are an art critic and poet, make a deep interpretation of '{title}' by {artist}. Write 3 words this artworks inspires you. Make it short if possible in bullet points. Include a short section that explains how it could resonate with our current society"
+    prompts = [
+        f"You are an art critic and poet, make a deep interpretation of '{title}' by {artist}. Write 3 words this artwork inspires you. Make it short if possible in bullet points. Include a short section that explains how it could resonate with our current society.",
+        f"Describe the emotions that '{title}' by {artist} evokes in you. Write a short paragraph about how this artwork connects with the viewer on an emotional level.",
+        f"Provide a random fact or interesting detail about '{title}' by {artist} or similar artworks. Explain how this fact contributes to the overall understanding of the piece.",
+    ]
+
+    prompt = random.choice(prompts)
+
     response = openai.Completion.create(
         engine="text-davinci-002",
         prompt=prompt,
