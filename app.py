@@ -47,7 +47,7 @@ def scrape_painting():
 def generate_chat_completion(messages, model="gpt-4", temperature=1, max_tokens=None):
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {GPT4_API_KEY}",
+        "Authorization": f"Bearer {openai.api_key}",
     }
 
     data = {
