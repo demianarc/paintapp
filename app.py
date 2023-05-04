@@ -52,7 +52,7 @@ def generate_artwork_info(artist, title):
     prompt = random.choice(prompts)
 
     response = openai.Completion.create(
-        engine="text-davinci-002",
+        engine="gpt-4",
         prompt=prompt,
         max_tokens=150,
         n=1,
