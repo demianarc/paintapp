@@ -51,18 +51,16 @@ def generate_artwork_info(artist, title):
 
     prompt = random.choice(prompts)
 
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "system", "content": "You are an art critic and poet."},
-                  {"role": "user", "content": prompt}
-        ],
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=prompt,
         max_tokens=150,
         n=1,
+        stop=None,
         temperature=0.7,
     )
 
     return response.choices[0].text.strip()
-
 
 
 @app.route('/')
