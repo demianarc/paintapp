@@ -44,28 +44,6 @@ def scrape_painting():
         "date": date
     }
 
-def generate_chat_completion(messages, model="gpt-4", temperature=1, max_tokens=None):
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {openai.api_key}",
-    }
-
-    data = {
-        "model": model,
-        "messages": messages,
-        "temperature": temperature,
-    }
-
-    if max_tokens is not None:
-        data["max_tokens"] = max_tokens
-
-    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, data=json.dumps(data))
-
-    if response.status_code == 200:
-        return response.json()["choices"][0]["message"]["content"]
-    else:
-        raise Exception(f"Error {response.status_code}: {response.text}")
-
 def generate_artwork_info(artist, title):
     prompts = [
         f"You are an art critic and poet, make a deep interpretation of '{title}' by {artist}. Write 3 words this artwork inspires you. Make it short if possible in bullet points. Include a short section that explains how it could resonate with our current society.",
@@ -75,13 +53,16 @@ def generate_artwork_info(artist, title):
 
     prompt = random.choice(prompts)
 
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": prompt}
-    ]
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=prompt,
+        max_tokens=150,
+        n=1,
+        stop=None,
+        temperature=0.7,
+    )
 
-    response_text = generate_chat_completion(messages)
-    return response_text.strip()
+    return response.choices[0].text.strip()
 
 
 @app.route('/')
