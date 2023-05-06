@@ -43,3 +43,10 @@ footer {
     font-size: 0.8rem;
     color: #666;
 }
+.info pre {
+    white-space: pre-wrap;
+    text-align: justify;
+    margin: 0 auto;
+    max-width: 90%;
+    padding: 15px;
+}
