@@ -65,8 +65,6 @@ def generate_artwork_info(artist, title):
 
     return response.choices[0].message.content.strip()
 
-
-
 @app.route('/')
 def painting_of_the_day():
     painting = scrape_painting()
