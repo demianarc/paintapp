@@ -53,32 +53,17 @@ def generate_artwork_info(artist, title):
 
     prompt = random.choice(prompts)
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {openai.api_key}",
-    }
-
-    data = {
-        "model": "gpt-4",
-        "messages": [
-            {"role": "system", "content": "You are an art critic and poet."},
-            {"role": "user", "content": prompt},
-        ],
-        "max_tokens": 150,
-        "n": 1,
-        "stop": None,
-        "temperature": 0.7,
-    }
-
-    response = requests.post(
-        "https://api.openai.com/v1/chat/completions",
-        headers=headers,
-        json=data,
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=prompt,
+        max_tokens=150,
+        n=1,
+        stop=None,
+        temperature=0.7,
     )
 
-    response.raise_for_status()
-    result = response.json()
-    return result["choices"][0]["message"]["content"].strip()
+    return response.choices[0].text.strip()
+
 
 @app.route('/')
 def painting_of_the_day():
