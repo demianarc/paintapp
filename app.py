@@ -56,7 +56,7 @@ def generate_artwork_info(artist, title):
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {API_KEY}",
+        "Authorization": f"Bearer {openai.api_key}",
     }
 
     messages = [
