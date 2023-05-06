@@ -27,6 +27,12 @@ body {
     height: auto;
     box-shadow: 0 4px 6px rgba(1, 1, 1, 1);
     margin-bottom: 2rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.painting:hover {
+    transform: scale(1.1);
+    border: 2px solid black;
 }
 
 h1 {
