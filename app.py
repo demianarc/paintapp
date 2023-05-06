@@ -12,7 +12,6 @@ app = Flask(__name__)
 
 # Load OpenAI API key from environment variables
 openai.api_key = os.environ.get("OPENAI_API_KEY")
-API_ENDPOINT = "https://api.openai.com/v1/chat/completions"
 
 def scrape_painting():
     api_key = os.environ.get("HARVARD_API_KEY")
@@ -54,31 +53,16 @@ def generate_artwork_info(artist, title):
 
     prompt = random.choice(prompts)
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {openai.api_key}",
-    }
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=prompt,
+        max_tokens=150,
+        n=1,
+        stop=None,
+        temperature=0.7,
+    )
 
-    messages = [
-        {"role": "system", "content": "You are an art critic and poet."},
-        {"role": "user", "content": prompt}
-    ]
-
-    data = {
-        "model": "gpt-4",
-        "messages": messages,
-        "temperature": 0.7,
-        "max_tokens": 150,
-    }
-
-    response = requests.post(API_ENDPOINT, headers=headers, data=json.dumps(data))
-
-    if response.status_code == 200:
-        response_text = response.json()["choices"][0]["message"]["content"]
-    else:
-        raise Exception(f"Error {response.status_code}: {response.text}")
-
-    return response_text.strip()
+    return response.choices[0].text.strip()
 
 
 @app.route('/')
