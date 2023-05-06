@@ -23,9 +23,10 @@ body {
 }
 
 .painting {
-    max-width: 100%;
+    max-width: 50%;
     height: auto;
     box-shadow: 0 4px 6px rgba(1, 1, 1, 1);
+    margin-bottom: 2rem;
 }
 
 h1 {
