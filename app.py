@@ -28,10 +28,7 @@ def scrape_painting():
             "image_url": None,
             "title": None,
             "artist": None,
-            "date": None,
-            "size": None,
-            "medium": None,
-            "museum": None
+            "date": None
         }
 
     painting = random.choice(data["records"])
@@ -40,20 +37,13 @@ def scrape_painting():
     title = painting["title"]
     artist = painting["people"][0]["name"] if "people" in painting and painting["people"] else "Unknown artist"
     date = painting["dated"]
-    size = painting["dimensions"][0]["value"] if "dimensions" in painting and painting["dimensions"] else "Unknown size"
-    medium = painting["medium"]
-    museum = painting["culture"] if "culture" in painting else "Unknown museum"
 
     return {
         "image_url": image_url,
         "title": title,
         "artist": artist,
-        "date": date,
-        "size": size,
-        "medium": medium,
-        "museum": museum
+        "date": date
     }
-
 
 def generate_artwork_info(artist, title):
     prompts = [
