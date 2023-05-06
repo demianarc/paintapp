@@ -46,28 +46,24 @@ def scrape_painting():
     }
 
 def generate_artwork_info(artist, title):
-    payload = {
-        "model": "gpt-4",
-        "messages": [
-            {"role": "system", "content": f"Please provide a deep interpretation of '{title}' by {artist}. Write 3 words that this artwork inspires you. Make it short if possible in bullet points. Include a short section that explains how it could resonate with our current society."},
-            {"role": "assistant", "content": "Sure, I can help with that. Let me generate some ideas for you."},
-            {"role": "user", "content": ""}
-        ],
-        "temperature": 0.5,
-        "max_tokens": 256,
-        "top_p": 1,
-        "frequency_penalty": 0,
-        "presence_penalty": 0
-    }
+    prompts = [
+        f"You are an art critic and poet, make a deep interpretation of '{title}' by {artist}. Write 3 words this artwork inspires you. Make it short if possible in bullet points. Include a short section that explains how it could resonate with our current society.",
+        f"Describe the emotions that '{title}' by {artist} evokes in you. Write a short paragraph about how this artwork connects with the viewer on an emotional level.",
+        f"Provide a random fact or interesting detail about '{title}' by {artist} or similar artworks. Explain how this fact contributes to the overall understanding of the piece.",
+    ]
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {openai.api_key}"
-    }
+    prompt = random.choice(prompts)
 
-    response = requests.post("https://api.openai.com/v1/chat/completions", json=payload, headers=headers)
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=prompt,
+        max_tokens=150,
+        n=1,
+        stop=None,
+        temperature=0.7,
+    )
 
-    return response.json()["choices"][0]["text"].strip()
+    return response.choices[0].text.strip()
 
 
 @app.route('/')
