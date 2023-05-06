@@ -22,6 +22,12 @@ body {
     flex-grow: 1;
 }
 
+.subheading {
+    font-size: 1rem;
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
 .painting {
     max-width: 50%;
     height: auto;
