@@ -70,3 +70,22 @@ footer {
     max-width: 90%;
     padding: 15px;
 }
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1rem;
+    margin: 1rem 0;
+    padding: 0.5rem 2rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.button:hover {
+    background-color: #45a049;
+}
