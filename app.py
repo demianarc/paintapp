@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from flask import jsonify
 import requests
 from bs4 import BeautifulSoup
 import openai
@@ -72,6 +73,13 @@ def painting_of_the_day():
     painting_info = generate_artwork_info(painting["artist"], painting["title"])
     painting["info"] = painting_info
     return render_template('index.html', painting=painting)
+
+@app.route('/refresh')
+def refresh():
+    painting = scrape_painting()
+    painting_info = generate_artwork_info(painting["artist"], painting["title"])
+    painting["info"] = painting_info
+    return jsonify(painting)
 
 if __name__ == '__main__':
     import os
