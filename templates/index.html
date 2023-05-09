@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Art AI Interpreter</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" />
     <style>
+        .twitter-share {
+            font-size: 1.5rem;
+            color: #1DA1F2;
+            cursor: pointer;
+            margin-left: 10px;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -53,9 +60,12 @@
             <h2>{{ painting.title }}</h2>
             <p>By {{ painting.artist }} ({{ painting.date }})</p>
             <div class="info">
-                <pre>{{ painting.info }}</pre>
+                <pre id="painting-info">{{ painting.info }}</pre>
             </div>
             <button class="button" onclick="location.reload()">New painting</button>
+            <a href="#" target="_blank" class="twitter-share">
+                <i class="fab fa-twitter"></i>
+            </a>
         </div>
         <footer>
             Flask-based Web App with OpenAI Integration, Developed Using ChatGPT-3.5 and Harvard's API. Dev by Dylan. Reload for new image.
@@ -88,6 +98,18 @@
             document.querySelector('.artist-date').textContent = `By ${painting.artist} (${painting.date})`;
             document.querySelector('.info pre').textContent = painting.info;
         }
+        function updateTwitterShareUrl(title, snippet, url) {
+            const text = encodeURIComponent(`Check out this AI interpretation of "${title}": ${snippet}`);
+            const hashtags = encodeURIComponent("ArtAI,Art,ArtApp,AI");
+            const shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}&hashtags=${hashtags}`;
+            const twitterShare = document.querySelector('.twitter-share');
+            twitterShare.href = shareUrl;
+        }
+
+        const painting = JSON.parse('{{ painting_json | tojson }}');
+        const snippet = painting.info.slice(0, 50) + '...'; // Adjust the length as needed
+        updateTwitterShareUrl(painting.title, snippet, 'https://your-app-url.com');
+    </script>
     </script>
 </body>
 </html>

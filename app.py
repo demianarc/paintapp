@@ -72,7 +72,8 @@ def painting_of_the_day():
     painting = scrape_painting()
     painting_info = generate_artwork_info(painting["artist"], painting["title"])
     painting["info"] = painting_info
-    return render_template('index.html', painting=painting)
+    painting_json = json.dumps(painting)
+    return render_template('index.html', painting=painting, painting_json=painting_json)
 
 @app.route('/refresh')
 def refresh():
