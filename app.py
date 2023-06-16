@@ -71,6 +71,11 @@ def generate_artwork_info(artist, title):
     if len(sentences) > 1 and not sentences[-1]:
         text = ".".join(sentences[:-1]).strip()
 
+    # Limit the maximum number of sentences to avoid cutoffs
+    MAX_SENTENCES = 4
+    if len(sentences) > MAX_SENTENCES:
+        text = ".".join(sentences[:MAX_SENTENCES]).strip()
+
     return text
 
 
