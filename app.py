@@ -58,7 +58,7 @@ def generate_artwork_info(artist, title):
     response = openai.Completion.create(
         engine="text-davinci-002",
         prompt=prompt,
-        max_tokens=400,
+        max_tokens=230,
         n=1,
         stop=None,
         temperature=0.7,
