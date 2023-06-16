@@ -46,7 +46,7 @@ def scrape_painting():
         "date": date
     }
 
-def generate_artwork_info(artist, title, period, location):
+def generate_artwork_info(artist, title):
     prompts = [
         f"As a poet and an art critic with deep knowledge of art history, imagine you are observing '{title}' by {artist}. Provide a detailed interpretation of the artwork based on the title and the artist's style. Discuss the potential themes, emotions, and artistic techniques that might be present in this piece. Additionally, write three words that you think could describe this artwork. In a concise sentence, explain how this artwork could resonate with our current society, considering the period and location it was created in ({period}, {location}).",
         f"Imagine yourself standing in front of '{title}' by {artist} as a poet and an artist. Describe the emotions that arise within you based on the title and the artist's reputation. Write a short paragraph about how you believe this artwork connects with the viewer on an emotional level. Use your imagination to explore the potential composition, color palette, and subject matter that could be present in this artwork. Consider the period and location it was created in ({period}, {location}) and discuss how it might reflect the societal and cultural influences of that time.",
