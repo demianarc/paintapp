@@ -58,8 +58,7 @@ def generate_artwork_info(artist, title):
     response = openai.Completion.create(
         engine="text-davinci-002",
         prompt=prompt,
-        max_tokens=500,  # Adjust the value as per your preference
-        temperature=0.7,
+        max_tokens=400,
         n=1,
         stop=None,
         temperature=0.7,
@@ -67,12 +66,12 @@ def generate_artwork_info(artist, title):
 
     text = response.choices[0].text.strip()
 
-    # Ensure the response ends with a complete sentence
+    # Check if the last sentence is incomplete and remove it if necessary
     sentences = text.split(".")
-    while len(sentences) > 1 and len(".".join(sentences)) > 400:
-        sentences = sentences[:-1]
+    if len(sentences) > 1 and not sentences[-1]:
+        text = ".".join(sentences[:-1]).strip()
 
-    return ".".join(sentences).strip()
+    return text
 
 
 @app.route('/')
