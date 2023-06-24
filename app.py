@@ -38,31 +38,19 @@ def scrape_painting():
     title = painting["title"]
     artist = painting["people"][0]["name"] if "people" in painting and painting["people"] else "Unknown artist"
     date = painting["dated"]
-    century = painting.get("century", "Unknown century")
-    culture = painting.get("culture", "Unknown culture")
-    medium = painting.get("medium", "Unknown medium")
-    dimensions = painting.get("dimensions", "Unknown dimensions")
-    exhibitionhistory = painting.get("exhibitionhistory", "No known exhibition history")
-    creditline = painting.get("creditline", "Unknown credit line")
 
     return {
         "image_url": image_url,
         "title": title,
         "artist": artist,
-        "date": date,
-        "century": century,
-        "culture": culture,
-        "medium": medium,
-        "dimensions": dimensions,
-        "exhibitionhistory": exhibitionhistory,
-        "creditline": creditline
+        "date": date
     }
 
-def generate_artwork_info(artist, title, century, culture, medium, dimensions, exhibitionhistory, creditline):
+def generate_artwork_info(artist, title):
     prompts = [
-        f"As an art historian with access to a vast knowledge base, explore the historical and cultural context surrounding '{title}' by {artist}. Discuss the artist's background, the broader artistic movement of the {century}, and the influence of the {culture}. Discuss the artist's choice of {medium} and the implications of the artwork's {dimensions}. Uncover the societal influences and prevailing themes of the time, offering valuable insights into the artwork's significance and its connection to the artist's overall body of work. Reflect on its {exhibitionhistory} and its {creditline}.",
-        f"Delve into the historical and cultural significance of '{title}' by {artist}. Explore the artist's background, the prevailing artistic trends of the {century}, and the social context in which the artwork was created. Discuss the use of {medium} and the impact of the artwork's {dimensions}. Reflect on the artwork's {exhibitionhistory} and its {creditline}. Provide insights into how this piece reflects or challenges the conventions of its era, shedding light on the artist's intentions and the audience'sresponse at the time. Consider the influence of the {culture} on the artwork.",
-        f"Analyze '{title}' by {artist}, a work of art from the {century}. Explore the historical and cultural context, focusing on the influence of the {culture}. Discuss the artist's use of {medium} and the impact of the {dimensions}. Reflect on its {exhibitionhistory} and consider its {creditline}. What does this piece reveal about the artistic, social, and political currents of its time? How does it reflect the artist's perspective and intent?"
+        f"As an art historian with access to a vast knowledge base, explore the historical and cultural context surrounding '{title}' by {artist}. Discuss the artist's background and the broader artistic movement of that period. Uncover the societal influences and prevailing themes of the time, offering valuable insights into the artwork's significance and its connection to the artist's overall body of work.",
+        f"Delve into the historical and cultural significance of '{title}' by {artist}. Explore the artist's background, the prevailing artistic trends of the time, and the social context in which the artwork was created. Provide insights into how this piece reflects or challenges the conventions of its era, shedding light on the artist's intentions and the audience's reception. If the artist is unknown, speculate on the possible influences and cultural implications of the artwork. Help the viewer immerse themselves in the painting's world by providing vivid emotional context.",
+        f"Explore the artistic legacy of {artist} through their notable works. While '{title}' may not be their most iconic piece, it offers an opportunity to discuss the recurring themes, techniques, and distinctive characteristics found in the artist's body of work. Examine how this artwork aligns with their oeuvre, discussing the influence and significance of their other renowned works. Imagine the emotions that this artwork conveys to the viewer and describe them in detail.",
     ]
 
     prompt = random.choice(prompts)
