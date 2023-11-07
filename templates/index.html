@@ -18,6 +18,13 @@
             font-weight: 600; /* Adjust as needed */
         }
 
+        .section-header {
+            font-size: 1.5rem; /* Adjust this value to make it smaller or larger */
+            font-weight: 500; /* Adjust the weight as needed */
+            margin-top: 20px; /* Adjust the spacing as needed */
+            margin-bottom: 10px; /* Adjust the spacing as needed */
+        }
+
         p {
             line-height: 1.6; /* Adjust as needed */
         }
@@ -65,6 +72,10 @@
             font-weight: bold;
             cursor: pointer;
         }
+        
+        .loading-cursor * {
+            cursor: progress !important;
+        }
     </style>
 </head>
 
@@ -77,15 +88,26 @@
             <h2>{{ painting.title }}</h2>
             <p>By {{ painting.artist }} ({{ painting.date }})</p>
             <div class="info">
-                <pre id="painting-info">{{ painting.info }}</pre>
+                {% set visual_split = painting.info.split('VISUAL_MARKER') %}
+                {% if visual_split | length > 1 %}
+                    {% set sections = visual_split[1].split('HISTORICAL_MARKER') %}
+                    {% if sections | length > 0 %}
+                        <h3 class="section-header">Visual Interpretation:</h3>
+                        <p>{{ sections[0] | safe }}</p>
+                    {% endif %}
+                    {% if sections | length > 1 %}
+                        <h3 class="section-header">Historical and Emotional Context:</h3>
+                        <p>{{ sections[1] | safe }}</p>
+                    {% endif %}
+                {% endif %}
             </div>
-            <button class="button" onclick="location.reload()">New painting</button>
+            <button class="button" onclick="fetchNewPainting()">New painting</button>            
             <a href="https://twitter.com/share?url=https://theartapp.vercel.app/&text=Check%20out%20this%20amazing%20AI%20Art%20App!&hashtags=ArtApp,AI" target="_blank" class="twitter-share">
                 <i class="fab fa-twitter"></i>
             </a>
         </div>
         <footer>
-            Flask-based Web App with OpenAI Integration, Developed Using ChatGPT-3.5 and Harvard's API. Dev by Dylan. Reload for new image.
+            Flask-based Web App with OpenAI Integration, Developed Using ChatGPT-4 (model gpt-4-1106-preview), GPT4 Vision (gpt-4-vision-preview) and Harvard's API. Dev by Dylan. Reload for new image.
         </footer>
     </div>
     <div id="modal" class="modal">
@@ -108,25 +130,45 @@
         }
     
         async function fetchNewPainting() {
-            const response = await fetch('/refresh');
-            const painting = await response.json();
-            document.querySelector('.painting').src = painting.image_url;
-            document.querySelector('h2').textContent = painting.title;
-            document.querySelector('.artist-date').textContent = `By ${painting.artist} (${painting.date})`;
-            document.querySelector('.info pre').textContent = painting.info;
-        }
-        function updateTwitterShareUrl(title, snippet, url) {
-            const text = encodeURIComponent(`Check out this AI interpretation of "${title}": ${snippet}`);
-            const hashtags = encodeURIComponent("ArtAI,Art,ArtApp,AI");
-            const shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}&hashtags=${hashtags}`;
-            const twitterShare = document.querySelector('.twitter-share');
-            twitterShare.href = shareUrl;
-        }
+    // Add the loading cursor class to the body
+    document.body.classList.add('loading-cursor');
 
-        const painting = JSON.parse('{{ painting_json | tojson }}');
-        const snippet = painting.info.slice(0, 50) + '...'; // Adjust the length as needed
-        updateTwitterShareUrl(painting.title, snippet, 'https://theartapp.vercel.app/');
-    </script>
+    try {
+        const response = await fetch('/refresh');
+        const painting = await response.json();
+        document.querySelector('.painting').src = painting.image_url;
+        document.querySelector('h2').textContent = painting.title;
+        document.querySelector('p').textContent = `By ${painting.artist} (${painting.date})`;
+        // Update the .info div with the new interpretation data
+        const visual_split = painting.info.split('VISUAL_MARKER');
+        if (visual_split.length > 1) {
+            const sections = visual_split[1].split('HISTORICAL_MARKER');
+            if (sections.length > 0) {
+                document.querySelector('.section-header').textContent = "Visual Interpretation:";
+                document.querySelector('.info p').innerHTML = sections[0];
+            }
+            if (sections.length > 1) {
+                // Add Historical and Emotional Context if it exists
+                // Assuming there is another .section-header and p to update
+                const contextHeader = document.querySelectorAll('.section-header')[1];
+                const contextParagraph = document.querySelectorAll('.info p')[1];
+                if(contextHeader && contextParagraph) {
+                    contextHeader.textContent = "Historical and Emotional Context:";
+                    contextParagraph.innerHTML = sections[1];
+                }
+            }
+        }
+        // Update the Twitter share link as needed
+        updateTwitterShareUrl(painting.title, painting.info.slice(0, 50) + '...', 'https://theartapp.vercel.app/');
+    } catch (error) {
+        console.error('Failed to fetch new painting:', error);
+    } finally {
+        // Remove the loading cursor class from the body
+        document.body.classList.remove('loading-cursor');
+    }
+}
+
+
     </script>
 </body>
 </html>

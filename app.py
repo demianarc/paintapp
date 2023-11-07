@@ -46,55 +46,81 @@ def scrape_painting():
         "date": date
     }
 
-def generate_artwork_info(artist, title):
-    prompts = [
-        f"As an art historian, you have the unique opportunity to provide context and insights into '{title}' by {artist}. Explore the artist's background, their artistic style, and any significant events or influences that shaped their work. Describe the themes, subjects, and techniques employed in this artwork, and speculate on their significance. Share your expertise and enlighten the viewer about the artist's intentions and the artwork's place within their body of work.",
-        f"Transport yourself to the world of {artist} as you analyze '{title}'. While some details about the artwork may be unknown, use your expertise to draw connections between the artist's known works and this piece. Discuss the potential inspirations, cultural influences, or personal experiences that could have informed the creation of this artwork. Provide a thoughtful interpretation that considers the artist's broader context and their unique artistic journey.",
-        f"Step into the realm of '{title}', a captivating creation by {artist}. Acknowledge the limitations of the available information and approach the artwork with an open mind. Share your interpretation, exploring potential narratives, emotions, and symbolic elements present in the artwork. Consider how this artwork fits into the artist's larger body of work and discuss any intriguing or unique aspects that set it apart. Engage the viewer with your thoughtful analysis and invite them to discover their own connection.",
-    ]
+def generate_artwork_info(artist, title, image_url):
+    openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    prompt = random.choice(prompts)
+    # First, get the visual interpretation using the image to ensure factual accuracy.
+    try:
+        visual_response = openai.ChatCompletion.create(
+            model="gpt-4-vision-preview",  # Use the vision model here
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "Describe this painting, focusing on its most notable visual aspects."},
+                        {"type": "image_url", "image_url": image_url},
+                    ]
+                }
+            ],
+            max_tokens=150  # Increased tokens to get more detail
+        )
 
-    response = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt=prompt,
-        max_tokens=230,
-        n=1,
-        stop=None,
-        temperature=0.7,
-    )
+        visual_text = visual_response.choices[0].message["content"]
 
-    text = response.choices[0].text.strip()
+        # Now, use the visual details to inform the chat model's emotional interpretation.
+        prompts = [
+            f"The painting '{title}' by {artist} features {visual_text}. What historical narratives or emotions might these details suggest?",
+            # Additional prompts can be crafted similarly, using visual_text.
+        ]
 
-    # Check if the last sentence is incomplete and remove it if necessary
-    sentences = text.split(".")
-    if len(sentences) > 1 and not sentences[-1]:
-        text = ".".join(sentences[:-1]).strip()
+        prompt = random.choice(prompts)
 
-    # Limit the maximum number of sentences to avoid cutoffs
-    MAX_SENTENCES = 4
-    if len(sentences) > MAX_SENTENCES:
-        text = ".".join(sentences[:MAX_SENTENCES]).strip()
+        text_response = openai.ChatCompletion.create(
+            model="gpt-4-1106-preview",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a knowledgeable and articulate art historian."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            max_tokens=230
+        )
 
-    return text
+        text = text_response.choices[0].message["content"]
+
+        # Combine both responses with titles for clarity.
+        combined_text = f"VISUAL_MARKER{visual_text}HISTORICAL_MARKER{text}"
+
+
+        return combined_text.strip()
+    except openai.error.OpenAIError as e:
+        print(f"An error occurred: {e}")
+        return "An error occurred while processing the image. Please try again later."
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return "An unexpected error occurred. Please try again later."
 
 
 @app.route('/')
 def painting_of_the_day():
     painting = scrape_painting()
-    painting_info = generate_artwork_info(painting["artist"], painting["title"])
-    painting["info"] = painting_info
+    # Make sure to pass all three parameters artist, title, and image_url
+    painting_info = generate_artwork_info(painting["artist"], painting["title"], painting["image_url"])
+    painting["info"] = painting_info if painting_info else "Information could not be generated."
     painting_json = json.dumps(painting)
     return render_template('index.html', painting=painting, painting_json=painting_json)
 
 @app.route('/refresh')
 def refresh():
     painting = scrape_painting()
-    painting_info = generate_artwork_info(painting["artist"], painting["title"])
+    painting_info = generate_artwork_info(painting["artist"], painting["title"], painting["image_url"])
     painting["info"] = painting_info
     return jsonify(painting)
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
